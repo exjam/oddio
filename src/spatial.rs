@@ -245,10 +245,11 @@ fn walk_set<T, U, I>(
             state.dt += elapsed;
         }
 
+        // HACK: Do not consider distance, otherwise sounds never stop
         // Discard finished sources. If a source is moving away faster than the speed of sound, you
         // might get a pop.
-        let distance = norm(prev_position.into());
-        let remaining = stop.remaining() + distance / SPEED_OF_SOUND;
+        //let distance = norm(prev_position.into());
+        let remaining = stop.remaining(); /* + distance / SPEED_OF_SOUND; */
         if remaining <= 0.0 {
             stop.stop();
         }
