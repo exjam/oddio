@@ -71,9 +71,19 @@ pub struct Gain<T: ?Sized> {
 impl<T> Gain<T> {
     /// Apply dynamic amplification to `signal`
     pub fn new(signal: T) -> Self {
+        Self::with_amplitude_ratio(signal, 1.0)
+    }
+
+    /// Apply dynamic amplification to `signal` starting with the given `db`
+    pub fn with_gain(signal: T, db: f32) -> Self {
+        Self::with_amplitude_ratio(signal, 10.0f32.powf(db / 20.0))
+    }
+
+    /// Apply dynamic amplification to `signal` starting with the given amplitude ratio
+    pub fn with_amplitude_ratio(signal: T, factor: f32) -> Self {
         Self {
-            shared: AtomicU32::new(1.0f32.to_bits()),
-            gain: RefCell::new(Smoothed::new(1.0)),
+            shared: AtomicU32::new(factor.to_bits()),
+            gain: RefCell::new(Smoothed::new(factor)),
             inner: signal,
         }
     }
